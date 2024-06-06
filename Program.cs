@@ -2,76 +2,69 @@
 
 namespace _03_Hangman;
 
-class Program
+internal abstract class Program
 {
-    static void Main(string[] args)
+    const int MAX_WRONG_GUESSES = 6;
+    private static void Main()
     {
         // List of possible words
-        List<string> words = new List<string> { "computer", "programming", "algorithm", "software", "hardware", "database", "network", "internet", "cybersecurity", "artificial" };
+        List<string> words = [
+            "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel"
+        ];
 
         // Choose a random word from the list
-        Random random = new Random();
-        int randomIndex = random.Next(words.Count);
+        int randomIndex = new Random().Next(words.Count);
         string word = words[randomIndex];
 
-        // Initialize the game state
+        // Initialise the game
         char[] guessedLetters = new char[word.Length];
-        for (int i = 0; i < word.Length; i++)
-        {
+        for (int i = 0; i < word.Length; i++) {
             guessedLetters[i] = '_';
         }
         int wrongGuesses = 0;
-        int maxWrongGuesses = 6;
         List<char> guessedChars = new List<char>();
 
-        // Game loop
-        while (wrongGuesses < maxWrongGuesses && Array.IndexOf(guessedLetters, '_') != -1)
-        {
+        // Principal loop
+        while (wrongGuesses < MAX_WRONG_GUESSES && Array.IndexOf(guessedLetters, '_') != -1) {
             Console.Clear();
-            Console.WriteLine("Hangman Game");
-            Console.WriteLine("Word: " + new string(guessedLetters));
-            Console.WriteLine("Wrong guesses: " + wrongGuesses + "/" + maxWrongGuesses);
-            Console.WriteLine("Guessed letters: " + string.Join(", ", guessedChars));
+            Console.WriteLine("A game of 'Hangman'");
+            Console.WriteLine($"Word: {new string(guessedLetters)}");
+            Console.WriteLine($"Wrong guesses: {wrongGuesses} / {MAX_WRONG_GUESSES}");
+            Console.WriteLine($"Guessed letters: {string.Join(", ", guessedChars)}");
 
             Console.Write("Guess a letter: ");
             char guess = Console.ReadKey().KeyChar;
             Console.WriteLine();
 
-            if (guessedChars.Contains(guess))
-            {
-                Console.WriteLine("You already guessed that letter. Try again.");
+            if (guessedChars.Contains(guess)) {
+                Console.WriteLine("You have already guessed that letter. Please try again.");
                 Console.ReadKey();
-                continue;
+                continue; //restart the loop
             }
 
             guessedChars.Add(guess);
 
             bool correctGuess = false;
-            for (int i = 0; i < word.Length; i++)
-            {
-                if (word[i] == guess)
-                {
+            for (int i = 0; i < word.Length; i++) {
+                if (word[i] == guess) {
                     guessedLetters[i] = guess;
                     correctGuess = true;
                 }
             }
 
-            if (!correctGuess)
-            {
+            if (!correctGuess) {
                 wrongGuesses++;
                 Console.WriteLine("Wrong guess!");
                 Console.ReadKey();
             }
-        }
+        } //end of principal loop 
 
         Console.Clear();
-        if (wrongGuesses == maxWrongGuesses)
-        {
-            Console.WriteLine("You lost! The word was: " + word);
+        if (wrongGuesses == MAX_WRONG_GUESSES) {
+            Console.WriteLine($"You have lost the game. The correct word was: {word}");
         }
-        else
-        {
-            Console.WriteLine("Congratulations! You guessed the word: " + word);
+        else {
+            Console.WriteLine($"Well done! You guessed the word: {word}");
         }
 
         Console.ReadKey();
